@@ -27,6 +27,13 @@ class Program
 
             var postedArticles = await GetPostedArticles("your_qiita_username");
 
+            // Log the titles of the posted articles
+            Console.WriteLine("以下の記事が既に投稿されています：");
+            foreach (var article in postedArticles)
+            {
+                Console.WriteLine(article);
+            }
+
             var articleFile = FindOldestUnpostedArticle(articlesDirectory, postedArticles);
             if (articleFile == null)
             {
@@ -52,7 +59,6 @@ class Program
             Console.WriteLine($"エラーが発生しました: {ex.Message}");
         }
     }
-
     static FileInfo FindOldestUnpostedArticle(string directoryPath, HashSet<string> postedArticles)
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
