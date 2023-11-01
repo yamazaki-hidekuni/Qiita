@@ -1,0 +1,2 @@
+Azure Virtual Machines (VM)とは.md
+アプリケーションをホストするとは？.md
