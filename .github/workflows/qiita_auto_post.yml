@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -37,3 +39,5 @@ jobs:
           git add posted_articles.txt
           git commit -m "Update posted articles list" || exit 0
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
