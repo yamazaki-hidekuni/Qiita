@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
 class Program
 {
     static async Task Main(string[] args)
@@ -16,8 +15,18 @@ class Program
             // 記事のディレクトリパス
             string articlesDirectory = "articles";
 
+            // 投稿済みの記事のリストを保持するテキストファイルのパス
+            string postedArticlesFile = "posted_articles.txt";
+
+            // 投稿済みの記事のリストを読み込む
+            List<string> postedArticles = new List<string>();
+            if (File.Exists(postedArticlesFile))
+            {
+                postedArticles = (await File.ReadAllLinesAsync(postedArticlesFile)).ToList();
+            }
+
             // 未投稿の記事を探す
-            var articleFile = FindOldestUnpostedArticle(articlesDirectory);
+            var articleFile = FindOldestUnpostedArticle(articlesDirectory, postedArticles);
             if (articleFile == null)
             {
                 Console.WriteLine("未投稿の記事が見つかりませんでした。");
@@ -34,9 +43,9 @@ class Program
             // Qiitaに投稿
             await PostArticleToQiita(title, tag, articleContent);
 
-            // ファイル名に "posted" を追加
-            string newFileName = $"{articleFile.FullName}_posted";
-            File.Move(articleFile.FullName, newFileName);
+            // 投稿済みの記事のリストに追加し、テキストファイルに保存
+            postedArticles.Add(articleFile.Name);
+            await File.WriteAllLinesAsync(postedArticlesFile, postedArticles);
 
             Console.WriteLine("記事をQiitaに投稿しました。");
         }
@@ -46,7 +55,7 @@ class Program
         }
     }
 
-    static FileInfo FindOldestUnpostedArticle(string directoryPath)
+    static FileInfo FindOldestUnpostedArticle(string directoryPath, List<string> postedArticles)
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
         FileInfo oldestFile = null;
@@ -56,8 +65,8 @@ class Program
         {
             foreach (var file in subDirectory.GetFiles("*.md"))
             {
-                // ファイル名に "posted" などのマーカーがないか確認
-                if (!file.Name.Contains("posted") && file.CreationTime < oldestDate)
+                // ファイル名が投稿済みの記事のリストに含まれていないか確認
+                if (!postedArticles.Contains(file.Name) && file.CreationTime < oldestDate)
                 {
                     oldestFile = file;
                     oldestDate = file.CreationTime;
