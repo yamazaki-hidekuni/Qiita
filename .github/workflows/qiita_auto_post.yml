@@ -27,3 +27,5 @@ jobs:
 
       - name: Run Qiita post script
         run: dotnet run --project src/QiitaAutoPost.csproj --configuration Release --no-build --no-restore
+        env:
+          QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
