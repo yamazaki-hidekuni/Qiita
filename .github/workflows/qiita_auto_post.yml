@@ -5,7 +5,7 @@ name: Qiita Auto Post
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '30 * * * *'
 
 jobs:
   post_to_qiita:
