@@ -17,12 +17,20 @@ class Program
 
             // 投稿済みの記事のリストを保持するテキストファイルのパス
             string postedArticlesFile = "../../posted_articles.txt";
-            
+            Console.WriteLine(Directory.GetCurrentDirectory());
+
             // 投稿済みの記事のリストを読み込む
             List<string> postedArticles = new List<string>();
             if (File.Exists(postedArticlesFile))
             {
                 postedArticles = (await File.ReadAllLinesAsync(postedArticlesFile)).ToList();
+
+                // ログにリストの内容を出力
+                Console.WriteLine("Posted articles:");
+                foreach (string article in postedArticles)
+                {
+                    Console.WriteLine(article);
+                }
             }
 
             // 未投稿の記事を探す
