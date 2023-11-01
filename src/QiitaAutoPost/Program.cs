@@ -16,8 +16,8 @@ class Program
             string articlesDirectory = "articles";
 
             // 投稿済みの記事のリストを保持するテキストファイルのパス
-            string postedArticlesFile = "posted_articles.txt";
-
+            string postedArticlesFile = "../../posted_articles.txt";
+            
             // 投稿済みの記事のリストを読み込む
             List<string> postedArticles = new List<string>();
             if (File.Exists(postedArticlesFile))
