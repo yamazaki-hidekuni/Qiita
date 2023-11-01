@@ -6,26 +6,22 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
 class Program
 {
+    private static readonly HttpClient httpClient = new HttpClient();
+
     static async Task Main(string[] args)
     {
         try
         {
-            // 記事のディレクトリパス
             string articlesDirectory = "articles";
+            string postedArticlesFile = "posted_articles.txt";
 
-            // 投稿済みの記事のリストを保持するテキストファイルのパス
-            string postedArticlesFile = "../../posted_articles.txt";
-            Console.WriteLine(Directory.GetCurrentDirectory());
-
-            // 投稿済みの記事のリストを読み込む
             List<string> postedArticles = new List<string>();
             if (File.Exists(postedArticlesFile))
             {
                 postedArticles = (await File.ReadAllLinesAsync(postedArticlesFile)).ToList();
-
-                // ログにリストの内容を出力
                 Console.WriteLine("Posted articles:");
                 foreach (string article in postedArticles)
                 {
@@ -33,7 +29,6 @@ class Program
                 }
             }
 
-            // 未投稿の記事を探す
             var articleFile = FindOldestUnpostedArticle(articlesDirectory, postedArticles);
             if (articleFile == null)
             {
@@ -41,17 +36,17 @@ class Program
                 return;
             }
 
-            // 記事の内容を読み込む
             string articleContent = await File.ReadAllTextAsync(articleFile.FullName);
-
-            // タイトルとタグを取得
             string title = Path.GetFileNameWithoutExtension(articleFile.Name);
             string tag = articleFile.Directory.Name;
 
-            // Qiitaに投稿
-            await PostArticleToQiita(title, tag, articleContent);
+            bool isPosted = await PostArticleToQiita(title, tag, articleContent);
+            if (!isPosted)
+            {
+                Console.WriteLine("記事の投稿に失敗しました。");
+                return;
+            }
 
-            // 投稿済みの記事のリストに追加し、テキストファイルに保存
             postedArticles.Add(articleFile.Name);
             await File.WriteAllLinesAsync(postedArticlesFile, postedArticles);
 
@@ -73,7 +68,6 @@ class Program
         {
             foreach (var file in subDirectory.GetFiles("*.md"))
             {
-                // ファイル名が投稿済みの記事のリストに含まれていないか確認
                 if (!postedArticles.Contains(file.Name) && file.CreationTime < oldestDate)
                 {
                     oldestFile = file;
@@ -84,10 +78,9 @@ class Program
         return oldestFile;
     }
 
-    static async Task PostArticleToQiita(string title, string tag, string content)
+    static async Task<bool> PostArticleToQiita(string title, string tag, string content)
     {
-        var httpClient = new HttpClient();
-        var requestUri = "https://qiita.com/api/v2/items"; // QiitaのAPIエンドポイント
+        var requestUri = "https://qiita.com/api/v2/items";
 
         var postData = new
         {
@@ -103,8 +96,6 @@ class Program
         var jsonContent = JsonSerializer.Serialize(postData);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        // ここでQiitaのアクセストークンを設定
-        // この例では、環境変数からアクセストークンを読み込んでいます
         var accessToken = Environment.GetEnvironmentVariable("QIITA_TOKEN");
         httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
@@ -112,17 +103,18 @@ class Program
 
         if (!response.IsSuccessStatusCode)
         {
-            // 例外をスローする代わりに、エラーメッセージをログに記録します
             Console.WriteLine($"Qiitaへの投稿に失敗しました。ステータスコード: {response.StatusCode}");
-            return;
+            return false;
         }
 
-        // レスポンスボディにエラーが含まれているかどうかを確認します
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseJson = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
         if (responseJson.ContainsKey("error"))
         {
             Console.WriteLine($"Qiitaへの投稿に失敗しました。エラーメッセージ: {responseJson["error"]}");
+            return false;
         }
+
+        return true;
     }
 }
