@@ -5,7 +5,7 @@ name: Qiita Auto Post
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 13 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   post_to_qiita:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0' # または使用している.NETのバージョン
+          dotnet-version: '6.0'
 
       - name: Install dependencies
         run: dotnet restore
@@ -29,3 +29,11 @@ jobs:
         run: dotnet run --project src/QiitaAutoPost.csproj --configuration Release --no-build --no-restore
         env:
           QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add posted_articles.txt
+          git commit -m "Update posted articles list" || exit 0
+          git push

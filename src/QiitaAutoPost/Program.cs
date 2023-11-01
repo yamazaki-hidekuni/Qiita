@@ -16,22 +16,17 @@ class Program
         try
         {
             string articlesDirectory = "articles";
+            string postedArticlesFile = "posted_articles.txt";
 
-            var accessToken = Environment.GetEnvironmentVariable("QIITA_TOKEN");
-            if (string.IsNullOrEmpty(accessToken))
+            List<string> postedArticles = new List<string>();
+            if (File.Exists(postedArticlesFile))
             {
-                Console.WriteLine("Qiitaのアクセストークンが設定されていません。");
-                return;
-            }
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-
-            var postedArticles = await GetPostedArticles("yamazaki_25");
-
-            // Log the titles of the posted articles
-            Console.WriteLine("以下の記事が既に投稿されています：");
-            foreach (var article in postedArticles)
-            {
-                Console.WriteLine(article);
+                postedArticles = (await File.ReadAllLinesAsync(postedArticlesFile)).ToList();
+                Console.WriteLine("Posted articles:");
+                foreach (string article in postedArticles)
+                {
+                    Console.WriteLine(article);
+                }
             }
 
             var articleFile = FindOldestUnpostedArticle(articlesDirectory, postedArticles);
@@ -52,6 +47,9 @@ class Program
                 return;
             }
 
+            postedArticles.Add(articleFile.Name);
+            await File.WriteAllLinesAsync(postedArticlesFile, postedArticles);
+
             Console.WriteLine("記事をQiitaに投稿しました。");
         }
         catch (Exception ex)
@@ -59,7 +57,8 @@ class Program
             Console.WriteLine($"エラーが発生しました: {ex.Message}");
         }
     }
-    static FileInfo FindOldestUnpostedArticle(string directoryPath, HashSet<string> postedArticles)
+
+    static FileInfo FindOldestUnpostedArticle(string directoryPath, List<string> postedArticles)
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
         FileInfo oldestFile = null;
@@ -69,7 +68,7 @@ class Program
         {
             foreach (var file in subDirectory.GetFiles("*.md"))
             {
-                if (!postedArticles.Contains(Path.GetFileNameWithoutExtension(file.Name)) && file.CreationTime < oldestDate)
+                if (!postedArticles.Contains(file.Name) && file.CreationTime < oldestDate)
                 {
                     oldestFile = file;
                     oldestDate = file.CreationTime;
@@ -77,35 +76,6 @@ class Program
             }
         }
         return oldestFile;
-    }
-
-    static async Task<HashSet<string>> GetPostedArticles(string userId)
-    {
-        var requestUri = $"https://qiita.com/api/v2/users/{userId}/items";
-        var postedArticles = new HashSet<string>();
-
-        while (true)
-        {
-            var response = await httpClient.GetAsync(requestUri);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Qiitaからの投稿の取得に失敗しました。ステータスコード: {response.StatusCode}");
-                break;
-            }
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var responseJson = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(responseBody);
-
-            postedArticles.UnionWith(responseJson.Select(item => item["title"].ToString()));
-
-            if (!response.Headers.TryGetValues("Link", out var linkHeader) || !linkHeader.Any(link => link.Contains("rel=\"next\"")))
-            {
-                break;
-            }
-        }
-
-        return postedArticles;
     }
 
     static async Task<bool> PostArticleToQiita(string title, string tag, string content)
@@ -125,6 +95,9 @@ class Program
 
         var jsonContent = JsonSerializer.Serialize(postData);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var accessToken = Environment.GetEnvironmentVariable("QIITA_TOKEN");
+        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
         var response = await httpClient.PostAsync(requestUri, httpContent);
 
