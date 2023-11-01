@@ -38,6 +38,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add posted_articles.txt
           git commit -m "Update posted articles list" || exit 0
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git remote set-url origin https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/yamazaki-hidekuni/Qiita.git
+          git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
