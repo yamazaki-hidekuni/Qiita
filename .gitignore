@@ -1,0 +1,21 @@
+# .NET build results
+bin/
+obj/
+
+# Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Secret information
+appsettings.json
+
+# Logs and temporary files
+*.log
+*.tmp

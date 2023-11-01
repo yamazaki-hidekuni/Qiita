@@ -1,0 +1,28 @@
+# Github ActionsでQiitaに自動投稿する
+
+name: Qiita Auto Post
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # 毎日午前9時
+
+jobs:
+  post_to_qiita:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0' # または使用している.NETのバージョン
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run Qiita post script
+        run: dotnet run --project src/QiitaAutoPost.csproj --configuration Release --no-build --no-restore
