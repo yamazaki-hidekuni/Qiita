@@ -1,2 +1,3 @@
 Azure Virtual Machines (VM)とは.md
 アプリケーションをホストするとは？.md
+Azureのアクセス設定と仮想マシンの管理.md
