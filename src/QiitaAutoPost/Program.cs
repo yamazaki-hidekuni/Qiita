@@ -25,7 +25,7 @@ class Program
             }
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-            var postedArticles = await GetPostedArticles("your_qiita_username");
+            var postedArticles = await GetPostedArticles("yamazaki_25");
 
             // Log the titles of the posted articles
             Console.WriteLine("以下の記事が既に投稿されています：");
