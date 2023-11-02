@@ -46,22 +46,24 @@ class Program
             File.Move(articleFile.FullName, newPath);
 
             // unpostedとpostedディレクトリを比較し、同名のファイルがあれば削除
-            string unpostedFilePath = articleFile.FullName;
-            if (File.Exists(newPath) && File.Exists(unpostedFilePath))
+            string unpostedFileName = Path.GetFileName(articleFile.FullName);
+            string postedFileName = Path.GetFileName(newPath);
+
+            if (postedFileName == unpostedFileName)
             {
                 try
                 {
-                    File.Delete(unpostedFilePath);
-                    Console.WriteLine($"削除成功: {unpostedFilePath}");
+                    File.Delete(articleFile.FullName);
+                    Console.WriteLine($"削除成功: {articleFile.FullName}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"削除失敗: {unpostedFilePath}, エラー: {ex.Message}");
+                    Console.WriteLine($"削除失敗: {articleFile.FullName}, エラー: {ex.Message}");
                 }
             }
             else
             {
-                Console.WriteLine($"削除対象なし: {unpostedFilePath}");
+                Console.WriteLine($"削除対象なし: {articleFile.FullName}");
             }
 
             Console.WriteLine("記事をQiitaに投稿しました。");
