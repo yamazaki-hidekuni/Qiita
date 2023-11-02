@@ -37,7 +37,13 @@ class Program
 
             // 投稿済みのマークをタイトルに追加
             string newFileName = $"{title}_posted.md";
-            File.Move(articleFile.FullName, Path.Combine(articleFile.Directory.FullName, newFileName));
+            string newPath = Path.Combine(articleFile.Directory.FullName, newFileName);
+
+            // 新しいファイルを作成し、元のファイルの内容をコピー
+            await File.WriteAllTextAsync(newPath, articleContent);
+
+            // 元のファイルを削除
+            File.Delete(articleFile.FullName);
 
             Console.WriteLine("記事をQiitaに投稿しました。");
         }
