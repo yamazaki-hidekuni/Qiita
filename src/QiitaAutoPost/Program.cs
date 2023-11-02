@@ -15,9 +15,10 @@ class Program
     {
         try
         {
-            string articlesDirectory = "articles";
+            string unpostedDirectory = "articles/unposted";
+            string postedDirectory = "articles/posted";
 
-            var articleFile = FindOldestUnpostedArticle(articlesDirectory);
+            var articleFile = FindOldestUnpostedArticle(unpostedDirectory);
             if (articleFile == null)
             {
                 Console.WriteLine("未投稿の記事が見つかりませんでした。");
@@ -35,15 +36,14 @@ class Program
                 return;
             }
 
-            // 投稿済みのマークをタイトルに追加
-            string newFileName = $"{title}_posted.md";
-            string newPath = Path.Combine(articleFile.Directory.FullName, newFileName);
-
-            // 新しいファイルを作成し、元のファイルの内容をコピー
-            await File.WriteAllTextAsync(newPath, articleContent);
-
-            // 元のファイルを削除
-            File.Delete(articleFile.FullName);
+            // 投稿済みのディレクトリに移動
+            string newDirectoryPath = Path.Combine(postedDirectory, tag);
+            if (!Directory.Exists(newDirectoryPath))
+            {
+                Directory.CreateDirectory(newDirectoryPath);
+            }
+            string newPath = Path.Combine(newDirectoryPath, articleFile.Name);
+            File.Move(articleFile.FullName, newPath);
 
             Console.WriteLine("記事をQiitaに投稿しました。");
         }
@@ -63,8 +63,7 @@ class Program
         {
             foreach (var file in subDirectory.GetFiles("*.md"))
             {
-                // 投稿済みのマークがないことを確認
-                if (!file.Name.Contains("_posted") && file.CreationTime < oldestDate)
+                if (file.CreationTime < oldestDate)
                 {
                     oldestFile = file;
                     oldestDate = file.CreationTime;

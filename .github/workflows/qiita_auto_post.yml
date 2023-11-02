@@ -36,8 +36,9 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add articles/**/*.md
-          git commit -m "Update posted articles" || exit 0
+          git add articles/unposted/**/*.md
+          git add articles/posted/**/*.md
+          git commit -m "Update articles status" || exit 0
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yamazaki-hidekuni/Qiita.git
           git push
         env:
