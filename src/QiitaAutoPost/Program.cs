@@ -102,7 +102,7 @@ class Program
         {
             body = content,
             coediting = false,
-            group_url_name = (string)null,
+            group_url_name = "jpt-qiita",
             @private = false,
             tags = new[] { new { name = tag } },
             title = title,
