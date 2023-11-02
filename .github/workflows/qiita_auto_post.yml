@@ -5,7 +5,7 @@ name: Qiita Auto Post
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 23 * * *'
 
 jobs:
   post_to_qiita:
@@ -36,8 +36,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add posted_articles.txt
-          git commit -m "Update posted articles list" || exit 0
+          git add articles/**/*.md
+          git commit -m "Update posted articles" || exit 0
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yamazaki-hidekuni/Qiita.git
           git push
         env:

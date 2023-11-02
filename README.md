@@ -9,12 +9,6 @@ GitHub Actionsを使用して定期的に記事をチェックし、未投稿の
 - Qiitaに自動投稿：未投稿の記事をQiitaに自動投稿します。
 - タグ別管理：記事はタグごとに分類され、整理されています。
 
-## 使用方法
-1. 'articles'ディレクトリにMarkdown形式で記事を作成します。
-2. 記事には適切なタグをつけて、タグごとのサブディレクトリに配置します。
-3. Githubリポジトリにプッシュします。
-4. GitHub Actionsが定期的にリポジトリをチェックし、未投稿の記事をQiitaに投稿します。
-
 ## プロジェクト構造
 
 ```
@@ -35,12 +29,9 @@ QiitaAutoPostProject/
 │   │   └── Program.cs           # メインの実行ファイル
 │   └── QiitaAutoPost.csproj     # プロジェクトファイル
 │
-├── tests/
-│   └── QiitaAutoPost.Tests/
-│       └── QiitaAutoPost.Tests.csproj
 │
 ├── .gitignore                   # Gitの無視ファイルリスト
-├── Qiita.sln                    # ソリューションファイル
-├── README.md                    # プロジェクトの説明や使い方を記述
+├── Qiita.sln                    # ソリューションファイル（自動生成）
+└── README.md                    # プロジェクトの説明や使い方を記述
 
 ```
