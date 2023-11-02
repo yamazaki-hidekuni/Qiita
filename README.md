@@ -1,22 +1,14 @@
 # Qiita Auto Post Project
 
-![C#](https://img.shields.io/badge/-C%23-239120?style=flat-square&logo=c-sharp&logoColor=white)
-
-![.NET](https://img.shields.io/badge/-.NET-512BD4?style=flat-square&logo=dot-net&logoColor=white)
-
-![Markdown](https://img.shields.io/badge/-Markdown-000000?style=flat-square&logo=markdown&logoColor=white)
-
+![C#](https://img.shields.io/badge/-C%23-239120?style=flat-square&logo=c-sharp&logoColor=white) 
+![.NET](https://img.shields.io/badge/-.NET-512BD4?style=flat-square&logo=dot-net&logoColor=white) 
 ![GitHub Actions](https://img.shields.io/badge/-GitHub%20Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white)
 
-![Build Status](https://github.com/yazaki-hidekuni/Qiita/workflows/Qiita_Auto_Post/badge.svg)
-
-![Last Commit](https://img.shields.io/github/last-commit/yazaki-hidekuni/Qiita)
-
-![Languages Count](https://img.shields.io/github/languages/count/yazaki-hidekuni/Qiita)
 
 
 ## 概要
-このプロジェクトは、GitHubリポジトリに保存されたMarkdown形式の記事を自動的にQiitaに投稿するためのものです。GitHub Actionsを使用して定期的に記事をチェックし、未投稿の記事をQiitaに投稿します。
+このプロジェクトは、GitHubリポジトリに保存されたMarkdown形式の記事を自動的にQiitaに投稿するためのものです。  
+GitHub Actionsを使用して定期的に記事をチェックし、未投稿の記事をQiitaに投稿します。
 
 ## 機能
 
