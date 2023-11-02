@@ -16,20 +16,8 @@ class Program
         try
         {
             string articlesDirectory = "articles";
-            string postedArticlesFile = "posted_articles.txt";
 
-            List<string> postedArticles = new List<string>();
-            if (File.Exists(postedArticlesFile))
-            {
-                postedArticles = (await File.ReadAllLinesAsync(postedArticlesFile)).ToList();
-                Console.WriteLine("Posted articles:");
-                foreach (string article in postedArticles)
-                {
-                    Console.WriteLine(article);
-                }
-            }
-
-            var articleFile = FindOldestUnpostedArticle(articlesDirectory, postedArticles);
+            var articleFile = FindOldestUnpostedArticle(articlesDirectory);
             if (articleFile == null)
             {
                 Console.WriteLine("未投稿の記事が見つかりませんでした。");
@@ -47,8 +35,9 @@ class Program
                 return;
             }
 
-            postedArticles.Add(articleFile.Name);
-            await File.WriteAllLinesAsync(postedArticlesFile, postedArticles);
+            // 投稿済みのマークをタイトルに追加
+            string newFileName = $"{title}_posted.md";
+            File.Move(articleFile.FullName, Path.Combine(articleFile.Directory.FullName, newFileName));
 
             Console.WriteLine("記事をQiitaに投稿しました。");
         }
@@ -58,7 +47,7 @@ class Program
         }
     }
 
-    static FileInfo FindOldestUnpostedArticle(string directoryPath, List<string> postedArticles)
+    static FileInfo FindOldestUnpostedArticle(string directoryPath)
     {
         var directoryInfo = new DirectoryInfo(directoryPath);
         FileInfo oldestFile = null;
@@ -68,7 +57,8 @@ class Program
         {
             foreach (var file in subDirectory.GetFiles("*.md"))
             {
-                if (!postedArticles.Contains(file.Name) && file.CreationTime < oldestDate)
+                // 投稿済みのマークがないことを確認
+                if (!file.Name.Contains("_posted") && file.CreationTime < oldestDate)
                 {
                     oldestFile = file;
                     oldestDate = file.CreationTime;
