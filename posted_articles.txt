@@ -1,1 +1,2 @@
 Azureのアクセス設定と仮想マシンの管理.md
+Azure Advisorとその重要性.md
