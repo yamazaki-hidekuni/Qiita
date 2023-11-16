@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cBirDbrRne0mJ4zIQgw/Diyz+QXu3CVwUAGzR2q2/GBivxc6vkL0377PfKDeZSNX6njyQtzF8Q894j3ROc+LTA==",
+  "dgSpecHash": "jyCj13aidsqw5hMJJRSJynrW4yqy8NfYZGdzXt82x7DNDweIJBFJkhAy0dVUbG4lzj70NUyjLdmKDgF/uOuYng==",
   "success": true,
-  "projectFilePath": "C:\\Users\\106-7944\\Development\\Qiita\\src\\QiitaAutoPost.csproj",
+  "projectFilePath": "/home/runner/work/Qiita/Qiita/src/QiitaAutoPost.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
