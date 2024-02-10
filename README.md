@@ -50,5 +50,5 @@ QiitaAutoPostProject/
 ├── Qiita.sln                    # ソリューションファイル
 └── README.md                    # プロジェクトの説明や使い方を記述
 ```
- 
+ ---
  
