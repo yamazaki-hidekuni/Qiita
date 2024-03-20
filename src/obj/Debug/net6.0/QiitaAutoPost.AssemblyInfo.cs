@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QiitaAutoPost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+658b57222aa6b458abd816ed64462c1425ef69a3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4b09eee3ac43270f37c3f9ff7ec9855dc463e78")]
 [assembly: System.Reflection.AssemblyProductAttribute("QiitaAutoPost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QiitaAutoPost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
